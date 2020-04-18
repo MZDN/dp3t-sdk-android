@@ -86,18 +86,18 @@ public class Database {
 	public List<Handshake> getHandshakes() {
 		SQLiteDatabase db = databaseOpenHelper.getReadableDatabase();
 		List<Handshake> handshakes = new ArrayList<>();
-		try (Cursor cursor = db
-				.query(Handshakes.TABLE_NAME, Handshakes.PROJECTION, null, null, null, null, Handshakes.ID)) {
-			while (cursor.moveToNext()) {
-				int id = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.ID));
-				long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(Handshakes.TIMESTAMP));
-				byte[] star = cursor.getBlob(cursor.getColumnIndexOrThrow(Handshakes.EPHID));
-				int txPowerLevel = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.TX_POWER_LEVEL));
-				int rssi = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.RSSI));
-				Handshake handShake = new Handshake(id, timestamp, star, txPowerLevel, rssi);
-				handshakes.add(handShake);
-			}
+		Cursor cursor = db
+				.query(Handshakes.TABLE_NAME, Handshakes.PROJECTION, null, null, null, null, Handshakes.ID);
+		while (cursor.moveToNext()) {
+			int id = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.ID));
+			long timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(Handshakes.TIMESTAMP));
+			byte[] star = cursor.getBlob(cursor.getColumnIndexOrThrow(Handshakes.EPHID));
+			int txPowerLevel = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.TX_POWER_LEVEL));
+			int rssi = cursor.getInt(cursor.getColumnIndexOrThrow(Handshakes.RSSI));
+			Handshake handShake = new Handshake(id, timestamp, star, txPowerLevel, rssi);
+			handshakes.add(handShake);
 		}
+		cursor.close();
 		return handshakes;
 	}
 
@@ -169,6 +169,7 @@ public class Database {
 			Contact contact = new Contact(id, date, ephid, associatedKnownCase);
 			contacts.add(contact);
 		}
+		cursor.close();
 		return contacts;
 	}
 
